@@ -103,7 +103,7 @@ while True:
     
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                if user_y_position-1 >=0 and generated_maze[user_x_position][user_y_position-2].bottom_wall:
+                if user_y_position-1 >=0 and not generated_maze[user_y_position-1][user_x_position].bottom_wall:
                     user_y_position-=1
 
                     if prev and prev[-1]=="s":
@@ -121,7 +121,7 @@ while True:
 
             elif event.key == pygame.K_s:
 
-                if user_y_position+1 <N and generated_maze[user_x_position][user_y_position+1].bottom_wall:
+                if user_y_position+1 <N and not generated_maze[user_y_position][user_x_position].bottom_wall:
                     user_y_position+=1
 
                     if prev and prev[-1]=="w":
@@ -137,7 +137,7 @@ while True:
 
                     prev.append("s")
             elif event.key == pygame.K_a:
-                if user_x_position-1 >= 0 and generated_maze[user_x_position-1][user_y_position].right_wall:
+                if user_x_position-1 >= 0 and not generated_maze[user_y_position][user_x_position-1].right_wall:
                     user_x_position-=1
 
                     if prev and prev[-1]=="d":
@@ -152,7 +152,7 @@ while True:
                     prev.append("a")
 
             elif event.key == pygame.K_d:
-                if user_x_position+1 <N and generated_maze[user_x_position+1][user_y_position].right_wall:
+                if user_x_position+1 <N and not generated_maze[user_y_position][user_x_position].right_wall:
                     user_x_position+=1
 
                     if prev and prev[-1]=="a":
