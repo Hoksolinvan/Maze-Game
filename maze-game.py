@@ -1,8 +1,13 @@
 import pygame
 import sys
 import time
+import random
+from mazeGeneration import algorithm
 
 pygame.init()
+
+icon = pygame.image.load('MAZE.png')
+pygame.display.set_icon(icon)
 
 screen = pygame.display.set_mode((0, 0),pygame.FULLSCREEN)
 pygame.display.set_caption("Maze Game")
@@ -11,7 +16,7 @@ WIDTH, HEIGHT = screen.get_size()
 WIDTH = min(WIDTH,HEIGHT)
 HEIGHT = min(WIDTH,HEIGHT)
 N = 20
-STEP_SIZE = WIDTH/N
+STEP_SIZE = WIDTH//N
 
 ## Buttons
 button_1 = pygame.Rect(1100,50,200,100)
@@ -23,21 +28,19 @@ font_2 = pygame.font.SysFont(None,36)
 Generate = font.render("Generate New Maze",True,(0,0,0))
 Solve = font.render("Solve",True,(0,0,0))
 user_score = 0;
-Score = font_2.render(f"Score: {user_score} ",True,(255,255,255));
 clock = pygame.time.Clock()
 
 
 grid = [[0 for x in range(N)] for x in range(N)]
 
-## 
-
-def 
-
+generated_maze = algorithm(N,N)
 
 
 for i in range(N):
     for j in range(N):
         grid[i][j]=pygame.Rect(i*STEP_SIZE,j*STEP_SIZE,STEP_SIZE,STEP_SIZE)
+
+
 
 
 # pprint.pprint(grid)
@@ -47,8 +50,29 @@ for i in range(N):
 
 start_ticks = pygame.time.get_ticks()
 FPS = 60
+prev = []
+starting_index = (random.randrange(0,N),random.randrange(0,N))
+user_movement = [[False for i in range(N)] for i in range(N)]
+user_x_position = starting_index[0]
+user_y_position = starting_index[1]
+user_movement[user_x_position][user_y_position] = True
 
+goal = (random.randrange(0,N),random.randrange(0,N))
+
+user_movement[starting_index[0]][starting_index[1]]=True
 while True:
+    Score = font_2.render(f"Score: {user_score} ",True,(255,255,255));
+
+
+    if user_x_position==goal[0] and user_y_position==goal[1]:
+        user_score+=100
+        generated_maze = algorithm(N,N)
+        starting_index = (random.randrange(0,N),random.randrange(0,N))
+        user_movement = [[False for i in range(N)] for i in range(N)]
+        user_movement[starting_index[0]][starting_index[1]]=True
+        user_x_position = starting_index[0]
+        user_y_position = starting_index[1]
+        goal = (random.randrange(0,N),random.randrange(0,N))
 
 
 
@@ -58,24 +82,133 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
         if button_1.collidepoint(mouse) or button_2.collidepoint(mouse):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button_1.collidepoint(mouse):
-                pass
+                starter = pygame.Rect(starting_index[0]*STEP_SIZE,starting_index[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE)
+                generated_maze = algorithm(N,N)
+                starting_index = (random.randrange(0,N),random.randrange(0,N))
+                user_movement = [[False for i in range(N)] for i in range(N)]
+                user_x_position = starting_index[0]
+                user_y_position = starting_index[1]
             
             elif button_2.collidepoint(mouse):
                 pass
 
-       
+    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                if user_y_position-1 >=0 and generated_maze[user_x_position][user_y_position-2].bottom_wall:
+                    user_y_position-=1
+
+                    if prev and prev[-1]=="s":
+                        user_movement[user_x_position][user_y_position+1]=False
+                        
+                        prev.pop()
+                        continue
+                    
+                    # if user_movement[user_x_position][user_y_position]:
+                    #     user_movement[user_x_position][user_y_position]=False
+                    # else:
+                    user_movement[user_x_position][user_y_position]=True   
+
+                    prev.append("w")
+
+            elif event.key == pygame.K_s:
+
+                if user_y_position+1 <N and generated_maze[user_x_position][user_y_position+1].bottom_wall:
+                    user_y_position+=1
+
+                    if prev and prev[-1]=="w":
+                        user_movement[user_x_position][user_y_position-1]=False
+                        prev.pop()
+                        print(prev)
+                        continue
+
+                    # if user_movement[user_x_position][user_y_position]:
+                    #     user_movement[user_x_position][user_y_position]=False
+                    else:
+                        user_movement[user_x_position][user_y_position]=True 
+
+                    prev.append("s")
+            elif event.key == pygame.K_a:
+                if user_x_position-1 >= 0 and generated_maze[user_x_position-1][user_y_position].right_wall:
+                    user_x_position-=1
+
+                    if prev and prev[-1]=="d":
+                        user_movement[user_x_position+1][user_y_position]=False
+                        prev.pop()
+                        print(prev)
+                        continue
+                    # if user_movement[user_x_position][user_y_position]:
+                    #     user_movement[user_x_position][user_y_position]=False
+                
+                    user_movement[user_x_position][user_y_position]=True 
+                    prev.append("a")
+
+            elif event.key == pygame.K_d:
+                if user_x_position+1 <N and generated_maze[user_x_position+1][user_y_position].right_wall:
+                    user_x_position+=1
+
+                    if prev and prev[-1]=="a":
+                        user_movement[user_x_position-1][user_y_position]=False
+                        prev.pop()
+                        print(prev)
+                        continue
+
+                    # if user_movement[user_x_position][user_y_position]:
+                    #     user_movement[user_x_position][user_y_position]=False
+                  
+                    user_movement[user_x_position][user_y_position]=True 
+
+                    prev.append("d")
 
     screen.fill((0, 0, 0))
     for i in range(N):
         for j in range(N):
-            pygame.draw.rect(screen,(255,255,0),grid[i][j],4)
+            pygame.draw.rect(screen,(144, 238, 144),grid[i][j])
+            
 
+    pygame.draw.rect(screen,(144, 0, 144),(goal[0]*STEP_SIZE,goal[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE))
+    
+
+    for i in range(N):
+        for j in range(N):
+            if user_movement[i][j]:
+                pygame.draw.rect(screen,(255,255,0),((i)*STEP_SIZE,j*STEP_SIZE,STEP_SIZE,STEP_SIZE))
+            
+            else:
+                pass
+                # pygame.draw.rect(screen,)
+
+    for i in range(N):
+        for j in range(N):
+            if(generated_maze[i][j].right_wall):
+
+                pygame.draw.line(screen,(255,0,0),(j*STEP_SIZE+STEP_SIZE,i*STEP_SIZE),(j*STEP_SIZE+STEP_SIZE,i*STEP_SIZE+STEP_SIZE),4)
+            
+            if(generated_maze[i][j].bottom_wall):
+                pygame.draw.line(screen,(255,0,0),(j*STEP_SIZE,i*STEP_SIZE+STEP_SIZE),(j*STEP_SIZE+STEP_SIZE,i*STEP_SIZE+STEP_SIZE),4)
+    
+
+
+
+    for i in range(N):
+        pygame.draw.line(screen,(255,0,0),(i*STEP_SIZE,0),((i+1)*STEP_SIZE,0),4)
+
+    for i in range(N):
+        pygame.draw.line(screen,(255,0,0),(0,i*STEP_SIZE),(0,(i+1)*STEP_SIZE),4)
+
+    
+
+
+
+    ## Text ##
     pygame.draw.rect(screen,(0,255,0),button_1,border_radius = 10)
     screen.blit(Generate,(1115,100))
     pygame.draw.rect(screen,(0,255,0),button_2,border_radius = 10)
