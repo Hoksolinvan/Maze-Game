@@ -1,8 +1,10 @@
 import pygame
 import sys
+import deque
 import time
 import random
 from mazeGeneration import algorithm
+from mazeSolver import A_star
 
 pygame.init()
 
@@ -96,6 +98,9 @@ while True:
                 user_movement = [[False for i in range(N)] for i in range(N)]
                 user_x_position = starting_index[0]
                 user_y_position = starting_index[1]
+                user_movement[starting_index[0]][starting_index[1]]=True
+                goal = (random.randrange(0,N),random.randrange(0,N))
+
             
             elif button_2.collidepoint(mouse):
                 pass
