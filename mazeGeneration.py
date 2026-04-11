@@ -88,7 +88,7 @@ def algorithm(m, n):
                 bottom = 0
                 continue
             
-            if random.random() < 0.75:
+            if random.random() < 0.5:
                 temp[j].bottom_wall = True
                 bottom += 1
             else:

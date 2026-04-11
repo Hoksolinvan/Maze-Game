@@ -1,6 +1,5 @@
 import pygame
 import sys
-import deque
 import time
 import random
 from mazeGeneration import algorithm
@@ -28,7 +27,7 @@ button_2 = pygame.Rect(1100,200,200,100)
 font = pygame.font.SysFont(None, 24)
 font_2 = pygame.font.SysFont(None,36)
 Generate = font.render("Generate New Maze",True,(0,0,0))
-Solve = font.render("Solve",True,(0,0,0))
+Solve = font.render("Hint",True,(0,0,0))
 user_score = 0;
 clock = pygame.time.Clock()
 
@@ -65,6 +64,10 @@ user_movement[starting_index[0]][starting_index[1]]=True
 while True:
     Score = font_2.render(f"Score: {user_score} ",True,(255,255,255));
 
+    screen.fill((0, 0, 0))
+    for i in range(N):
+        for j in range(N):
+            pygame.draw.rect(screen,(144, 238, 144),grid[i][j])
 
     if user_x_position==goal[0] and user_y_position==goal[1]:
         user_score+=100
@@ -103,7 +106,40 @@ while True:
 
             
             elif button_2.collidepoint(mouse):
-                pass
+                result = A_star(starting_index,goal,generated_maze,N,N)
+
+                if not result:
+                    starter = pygame.Rect(starting_index[0]*STEP_SIZE,starting_index[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE)
+                    generated_maze = algorithm(N,N)
+                    starting_index = (random.randrange(0,N),random.randrange(0,N))
+                    user_movement = [[False for i in range(N)] for i in range(N)]
+                    user_x_position = starting_index[0]
+                    user_y_position = starting_index[1]
+                    user_movement[starting_index[0]][starting_index[1]]=True
+                    goal = (random.randrange(0,N),random.randrange(0,N))
+                    continue
+
+                else:
+                    #print(result)
+                    current_rect_content = []
+                    for i in range(len(result)):
+                        x,y = result[i]
+                        rect_temp = pygame.Rect(x*STEP_SIZE,y*STEP_SIZE,STEP_SIZE,STEP_SIZE)
+                        current_rect_content.append(rect_temp)
+
+                    
+                    for rect_temp in current_rect_content:
+                        pygame.draw.rect(screen,(255,255,255),rect_temp)
+                    
+                    # starter = pygame.Rect(starting_index[0]*STEP_SIZE,starting_index[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE)
+                    # generated_maze = algorithm(N,N)
+                    # starting_index = (random.randrange(0,N),random.randrange(0,N))
+                    # user_movement = [[False for i in range(N)] for i in range(N)]
+                    # user_x_position = starting_index[0]
+                    # user_y_position = starting_index[1]
+                    # user_movement[starting_index[0]][starting_index[1]]=True
+                    # goal = (random.randrange(0,N),random.randrange(0,N))
+                    # continue
 
     
         if event.type == pygame.KEYDOWN:
@@ -132,7 +168,6 @@ while True:
                     if prev and prev[-1]=="w":
                         user_movement[user_x_position][user_y_position-1]=False
                         prev.pop()
-                        print(prev)
                         continue
 
                     # if user_movement[user_x_position][user_y_position]:
@@ -148,7 +183,6 @@ while True:
                     if prev and prev[-1]=="d":
                         user_movement[user_x_position+1][user_y_position]=False
                         prev.pop()
-                        print(prev)
                         continue
                     # if user_movement[user_x_position][user_y_position]:
                     #     user_movement[user_x_position][user_y_position]=False
@@ -163,7 +197,6 @@ while True:
                     if prev and prev[-1]=="a":
                         user_movement[user_x_position-1][user_y_position]=False
                         prev.pop()
-                        print(prev)
                         continue
 
                     # if user_movement[user_x_position][user_y_position]:
@@ -173,10 +206,7 @@ while True:
 
                     prev.append("d")
 
-    screen.fill((0, 0, 0))
-    for i in range(N):
-        for j in range(N):
-            pygame.draw.rect(screen,(144, 238, 144),grid[i][j])
+    
             
 
     pygame.draw.rect(screen,(144, 0, 144),(goal[0]*STEP_SIZE,goal[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE))

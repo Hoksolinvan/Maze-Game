@@ -1,4 +1,4 @@
-from collections import heapq
+import heapq
 
 
 def reconstruct_path(came_from, current):
@@ -36,7 +36,7 @@ def heuristic(start, exit):
     return abs(start[0] - exit[0]) + abs(start[1] - exit[1])
 
 
-def A_star(start, exit, heuristic, matrix_scheme, m, n):
+def A_star(start, exit, matrix_scheme, m, n,heuristic=heuristic):
     pq = []
     heapq.heappush(pq, (0, start))
 
