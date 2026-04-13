@@ -43,12 +43,6 @@ for i in range(N):
 
 
 
-
-# pprint.pprint(grid)
-
-# 0,1,2,3,4,5
-# 0,1,2,3,4,5.      0,0; 0,16; 0, 32; 0, 48; 0, 64; 0, 250; 0, 350; 0,400; 0, 450; 0,500; 0,550; 0,600; 0,650; 0,700; 0,750; 0,800
-
 start_ticks = pygame.time.get_ticks()
 FPS = 60
 prev = []
@@ -130,17 +124,7 @@ while True:
                     
                     for rect_temp in current_rect_content:
                         pygame.draw.rect(screen,(255,255,255),rect_temp)
-                    
-                    # starter = pygame.Rect(starting_index[0]*STEP_SIZE,starting_index[1]*STEP_SIZE,STEP_SIZE,STEP_SIZE)
-                    # generated_maze = algorithm(N,N)
-                    # starting_index = (random.randrange(0,N),random.randrange(0,N))
-                    # user_movement = [[False for i in range(N)] for i in range(N)]
-                    # user_x_position = starting_index[0]
-                    # user_y_position = starting_index[1]
-                    # user_movement[starting_index[0]][starting_index[1]]=True
-                    # goal = (random.randrange(0,N),random.randrange(0,N))
-                    # continue
-
+                  
     
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
@@ -152,10 +136,7 @@ while True:
                         
                         prev.pop()
                         continue
-                    
-                    # if user_movement[user_x_position][user_y_position]:
-                    #     user_movement[user_x_position][user_y_position]=False
-                    # else:
+                 
                     user_movement[user_x_position][user_y_position]=True   
 
                     prev.append("w")
@@ -170,8 +151,6 @@ while True:
                         prev.pop()
                         continue
 
-                    # if user_movement[user_x_position][user_y_position]:
-                    #     user_movement[user_x_position][user_y_position]=False
                     else:
                         user_movement[user_x_position][user_y_position]=True 
 
@@ -184,9 +163,7 @@ while True:
                         user_movement[user_x_position+1][user_y_position]=False
                         prev.pop()
                         continue
-                    # if user_movement[user_x_position][user_y_position]:
-                    #     user_movement[user_x_position][user_y_position]=False
-                
+               
                     user_movement[user_x_position][user_y_position]=True 
                     prev.append("a")
 
@@ -199,9 +176,6 @@ while True:
                         prev.pop()
                         continue
 
-                    # if user_movement[user_x_position][user_y_position]:
-                    #     user_movement[user_x_position][user_y_position]=False
-                  
                     user_movement[user_x_position][user_y_position]=True 
 
                     prev.append("d")
@@ -217,9 +191,7 @@ while True:
             if user_movement[i][j]:
                 pygame.draw.rect(screen,(255,255,0),((i)*STEP_SIZE,j*STEP_SIZE,STEP_SIZE,STEP_SIZE))
             
-            else:
-                pass
-                # pygame.draw.rect(screen,)
+           
 
     for i in range(N):
         for j in range(N):
